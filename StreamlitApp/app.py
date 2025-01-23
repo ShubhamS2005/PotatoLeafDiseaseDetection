@@ -27,15 +27,13 @@ model3 = tf.keras.models.load_model(MODEL_PATH3)
 
 class_names =["Early Blight","Late Blight","Healthy"]
 
-
-
 def realTime():
-    st.write("**Ensure your webcam is connected.**")
+    st.write("Ensure your webcam is connected.")
 
     if "video_state" not in st.session_state:
-        st.session_state.video_state = "stopped"
+        st.session_state.video_state = "stopped"  
     if "frame_predictions" not in st.session_state:
-        st.session_state.frame_predictions = []
+        st.session_state.frame_predictions = [] 
 
     col1, col2 = st.columns(2)
 
@@ -43,19 +41,19 @@ def realTime():
         if st.button("Play"):
             st.session_state.video_state = "playing"
 
+
     with col2:
         if st.button("Stop"):
             st.session_state.video_state = "stopped"
 
     FRAME_WINDOW = st.empty()
 
-    # Use shared camera resource
-    cap = st.session_state.camera
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
-        st.error("Unable to access the camera. Please check your webcam.")
+        st.error("Unable to access the camera. Please check if the webcam is connected or being used by another application.")
         return
-
+    
     frame_rate = 10
     frame_delay = 1 / frame_rate
     frame_count = 0
@@ -78,8 +76,9 @@ def realTime():
         st.session_state.frame_predictions.append((class_idx, confidence))
         frame_count += 1
 
+
         # Generate Grad-CAM heatmap
-        heatmap = grad_cam(model2, img_array, "conv2d_116")
+        heatmap = grad_cam(model2, img_array, "conv2d_116")  
         heatmap_resized = cv2.resize(heatmap, (frame.shape[1], frame.shape[0]))
 
         threshold = 0.67  # Adjust as needed
@@ -97,7 +96,12 @@ def realTime():
             y_max = min(frame.shape[0], y_max)
 
             # Draw bounding box on the frame
-            cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (200, 0, 0), 2)  # Blue color
+            cv2.rectangle(
+                frame,
+                (x_min, y_min),
+                (x_max, y_max),
+                (200, 0, 0), 2  # Blue color with thickness 2
+            )
         else:
             st.warning("No activated regions detected.")
 
@@ -107,9 +111,7 @@ def realTime():
         if frame_count == 15:
             predictions_count = Counter([pred[0] for pred in st.session_state.frame_predictions])
             most_common_class_idx, count = predictions_count.most_common(1)[0]
-            avg_confidence = np.mean(
-                [pred[1] for pred in st.session_state.frame_predictions if pred[0] == most_common_class_idx]
-            )
+            avg_confidence = np.mean([pred[1] for pred in st.session_state.frame_predictions if pred[0] == most_common_class_idx])
 
             st.success(f"Confirmed Prediction: {class_names[most_common_class_idx]} ({avg_confidence * 100:.2f}%)")
             st.session_state.frame_predictions = []
@@ -117,6 +119,9 @@ def realTime():
 
         time.sleep(frame_delay)
 
+
+    # Release the camera resource
+    cap.release()
     FRAME_WINDOW.empty()
     st.write("Video stream stopped.")
     
@@ -293,10 +298,6 @@ if __name__=="__main__":
         realTime()
     elif(option=="About"):
         about()
-
-    if st.button("Release Camera"):
-        st.session_state.camera.release()
-        st.success("Camera resource released.")
     
     st.markdown("---")
     st.info("📌 Navigate to different sections using the sidebar.")
