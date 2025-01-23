@@ -1,6 +1,6 @@
 streamlit
 tensorflow
-opencv-python
+opencv-python-headless
 numpy
 matplotlib
 pillow
