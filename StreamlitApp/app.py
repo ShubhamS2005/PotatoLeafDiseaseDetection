@@ -283,8 +283,8 @@ if __name__=="__main__":
     elif(option=="Use Camera"):
         camera()
         
-    # elif(option=="Real Time Video"):
-    #     realTime()
+    elif(option=="Real Time Video"):
+        realTime()
     elif(option=="About"):
         about()
     st.markdown("---")
