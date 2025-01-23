@@ -9,11 +9,17 @@ from Home import home
 from About import about
 import time 
 from collections import Counter
+import os 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model", "custom_model.h5")
+MODEL_PATH2 = os.path.join(BASE_DIR, "model", "Inception.h5")
+MODEL_PATH3 = os.path.join(BASE_DIR, "model", "ResNet.h5")
 
 # Load the trained model
-MODEL_PATH = 'model/custom_model.h5'
-MODEL_PATH2 = 'model/Inception.h5'
-MODEL_PATH3 = 'model/ResNet.h5'
+# MODEL_PATH = 'model/custom_model.h5'
+# MODEL_PATH2 = 'model/Inception.h5'
+# MODEL_PATH3 = 'model/ResNet.h5'
 
 model = tf.keras.models.load_model(MODEL_PATH)
 model2 = tf.keras.models.load_model(MODEL_PATH2)
