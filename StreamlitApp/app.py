@@ -30,7 +30,8 @@ class_names =["Early Blight","Late Blight","Healthy"]
 if "camera" not in st.session_state:
     st.session_state.camera = cv2.VideoCapture(0)
 
-st.write("**Ensure your webcam is connected.**")
+def realTime():
+    st.write("**Ensure your webcam is connected.**")
 
     if "video_state" not in st.session_state:
         st.session_state.video_state = "stopped"
