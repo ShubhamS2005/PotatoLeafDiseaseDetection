@@ -164,46 +164,36 @@ def upload():
         st.image(result_img,caption="Grad-CAM Result", use_container_width=True)
 
 def camera():
-    st.write("**Capture a potato leaf image**")
+    camera_image = st.camera_input("Capture a potato leaf image")
+    if camera_image is not None:
+        img = Image.open(camera_image)
+        st.image(img, caption="Captured Image",use_container_width=True)
+        img_array = preprocess_image(img)
 
-    cap = st.session_state.camera
-    if not cap.isOpened():
-        st.error("Unable to access the camera. Please check your webcam.")
-        return
+        predictions = model.predict(img_array)
+        class_idx = np.argmax(predictions[0])
 
-    ret, frame = cap.read()
-    if not ret:
-        st.error("Failed to capture photo. Please refresh the app or check the camera.")
-        return
+        predictions2 = model2.predict(img_array)
+        class_idx2 = np.argmax(predictions2[0])
 
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    st.image(frame_rgb, caption="Captured Image", use_container_width=True)
+        predictions3 = model3.predict(img_array)
+        class_idx3 = np.argmax(predictions3[0])
 
-    img_array = preprocess_frame(frame_rgb)
 
-    predictions = model.predict(img_array)
-    class_idx = np.argmax(predictions[0])
+        st.subheader("Prediction Results")
+        
+        st.write("### Custom CNN Model")
+        st.success(f"Prediction: {class_names[class_idx]}")
+        st.info(f"Confidence: {predictions[0][class_idx]*100:.2f}")
 
-    predictions2 = model2.predict(img_array)
-    class_idx2 = np.argmax(predictions2[0])
+        st.write("### Inception Model")
+        st.success(f"Prediction: {class_names[class_idx2]}")
+        st.info(f"Confidence: {predictions2[0][class_idx2]*100:.2f}")
 
-    predictions3 = model3.predict(img_array)
-    class_idx3 = np.argmax(predictions3[0])
-
-    st.subheader("Prediction Results")
-
-    st.write("### Custom CNN Model")
-    st.success(f"Prediction: {class_names[class_idx]}")
-    st.info(f"Confidence: {predictions[0][class_idx] * 100:.2f}")
-
-    st.write("### Inception Model")
-    st.success(f"Prediction: {class_names[class_idx2]}")
-    st.info(f"Confidence: {predictions2[0][class_idx2] * 100:.2f}")
-
-    st.write("### ResNet Model")
-    st.success(f"Prediction: {class_names[class_idx3]}")
-    st.info(f"Confidence: {predictions3[0][class_idx3] * 100:.2f}")    
-
+        st.write("### ResNet Model")
+        st.success(f"Prediction: {class_names[class_idx3]}")
+        st.info(f"Confidence: {predictions3[0][class_idx3]*100:.2f}")
+        
 
 # Function to preprocess uploaded images
 def preprocess_image(img):
