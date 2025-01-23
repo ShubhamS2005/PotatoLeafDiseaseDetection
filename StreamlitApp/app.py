@@ -120,7 +120,7 @@ def realTime():
 
     FRAME_WINDOW.empty()
     st.write("Video stream stopped.")
-
+    
 def upload():
     uploaded_file = st.file_uploader("Upload a potato leaf image", type=["jpg", "png", "jpeg"])
     if uploaded_file is not None:
