@@ -159,95 +159,46 @@ def upload():
         result_img = overlay_heatmap_Img(heatmap, img, opacity=0.4)
         st.image(result_img,caption="Grad-CAM Result", use_container_width=True)
 
-st.write("**Ensure your webcam is connected.**")
+def camera():
+    st.write("**Capture a potato leaf image**")
 
-    if "video_state" not in st.session_state:
-        st.session_state.video_state = "stopped"
-    if "frame_predictions" not in st.session_state:
-        st.session_state.frame_predictions = []
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button("Play"):
-            st.session_state.video_state = "playing"
-
-    with col2:
-        if st.button("Stop"):
-            st.session_state.video_state = "stopped"
-
-    FRAME_WINDOW = st.empty()
-
-    # Use shared camera resource
     cap = st.session_state.camera
-
     if not cap.isOpened():
         st.error("Unable to access the camera. Please check your webcam.")
         return
 
-    frame_rate = 10
-    frame_delay = 1 / frame_rate
-    frame_count = 0
+    ret, frame = cap.read()
+    if not ret:
+        st.error("Failed to capture photo. Please refresh the app or check the camera.")
+        return
 
-    while st.session_state.video_state != "stopped":
-        # Capture frame
-        ret, frame = cap.read()
-        if not ret:
-            st.error("Failed to read from the webcam. Please refresh the app or check the camera.")
-            break
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    st.image(frame_rgb, caption="Captured Image", use_container_width=True)
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    img_array = preprocess_frame(frame_rgb)
 
-        # Preprocess the frame for the model
-        img_array = preprocess_frame(frame)
-        predictions = model2.predict(img_array)
-        class_idx = np.argmax(predictions[0])
-        confidence = predictions[0][class_idx]
+    predictions = model.predict(img_array)
+    class_idx = np.argmax(predictions[0])
 
-        st.session_state.frame_predictions.append((class_idx, confidence))
-        frame_count += 1
+    predictions2 = model2.predict(img_array)
+    class_idx2 = np.argmax(predictions2[0])
 
-        # Generate Grad-CAM heatmap
-        heatmap = grad_cam(model2, img_array, "conv2d_116")
-        heatmap_resized = cv2.resize(heatmap, (frame.shape[1], frame.shape[0]))
+    predictions3 = model3.predict(img_array)
+    class_idx3 = np.argmax(predictions3[0])
 
-        threshold = 0.67  # Adjust as needed
-        activated_region = heatmap_resized > threshold
+    st.subheader("Prediction Results")
 
-        # Find the coordinates of the bounding box
-        y_indices, x_indices = np.where(activated_region)
-        if len(x_indices) > 0 and len(y_indices) > 0:
-            x_min, x_max = np.min(x_indices), np.max(x_indices)
-            y_min, y_max = np.min(y_indices), np.max(y_indices)
+    st.write("### Custom CNN Model")
+    st.success(f"Prediction: {class_names[class_idx]}")
+    st.info(f"Confidence: {predictions[0][class_idx] * 100:.2f}")
 
-            x_min = max(0, x_min)
-            x_max = min(frame.shape[1], x_max)
-            y_min = max(0, y_min)
-            y_max = min(frame.shape[0], y_max)
+    st.write("### Inception Model")
+    st.success(f"Prediction: {class_names[class_idx2]}")
+    st.info(f"Confidence: {predictions2[0][class_idx2] * 100:.2f}")
 
-            # Draw bounding box on the frame
-            cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (200, 0, 0), 2)  # Blue color
-        else:
-            st.warning("No activated regions detected.")
-
-        # Display video frame with bounding box
-        FRAME_WINDOW.image(frame, channels="RGB")
-
-        if frame_count == 15:
-            predictions_count = Counter([pred[0] for pred in st.session_state.frame_predictions])
-            most_common_class_idx, count = predictions_count.most_common(1)[0]
-            avg_confidence = np.mean(
-                [pred[1] for pred in st.session_state.frame_predictions if pred[0] == most_common_class_idx]
-            )
-
-            st.success(f"Confirmed Prediction: {class_names[most_common_class_idx]} ({avg_confidence * 100:.2f}%)")
-            st.session_state.frame_predictions = []
-            frame_count = 0
-
-        time.sleep(frame_delay)
-
-    FRAME_WINDOW.empty()
-    st.write("Video stream stopped.")
+    st.write("### ResNet Model")
+    st.success(f"Prediction: {class_names[class_idx3]}")
+    st.info(f"Confidence: {predictions3[0][class_idx3] * 100:.2f}")    
 
 
 # Function to preprocess uploaded images
