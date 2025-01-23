@@ -275,7 +275,7 @@ if __name__=="__main__":
         home()
     
     st.sidebar.header("Options")
-    option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","Real Time Video","About"],index=None)
+    option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","About"],index=None)
     
     if(option=="Upload Image"):
         upload()
@@ -283,8 +283,8 @@ if __name__=="__main__":
     elif(option=="Use Camera"):
         camera()
         
-    elif(option=="Real Time Video"):
-        realTime()
+    # elif(option=="Real Time Video"):
+    #     realTime()
     elif(option=="About"):
         about()
     st.markdown("---")
