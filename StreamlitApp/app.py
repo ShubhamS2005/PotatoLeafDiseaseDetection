@@ -271,9 +271,6 @@ if __name__=="__main__":
 
     if st.session_state.page == "home":
         home()
-
-    if "camera" not in st.session_state:
-        st.session_state.camera = cv2.VideoCapture(0)
     
     st.sidebar.header("Options")
     option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","Real Time Video","About"],index=None)
