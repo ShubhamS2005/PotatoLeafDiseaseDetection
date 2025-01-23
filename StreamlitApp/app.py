@@ -27,8 +27,7 @@ model3 = tf.keras.models.load_model(MODEL_PATH3)
 
 class_names =["Early Blight","Late Blight","Healthy"]
 
-if "camera" not in st.session_state:
-    st.session_state.camera = cv2.VideoCapture(0)
+
 
 def realTime():
     st.write("**Ensure your webcam is connected.**")
@@ -278,7 +277,8 @@ if __name__=="__main__":
     if st.session_state.page == "home":
         home()
 
-    
+    if "camera" not in st.session_state:
+        st.session_state.camera = cv2.VideoCapture(0)
     
     st.sidebar.header("Options")
     option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","Real Time Video","About"],index=None)
