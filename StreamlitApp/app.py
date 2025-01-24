@@ -9,18 +9,23 @@ from Home import home
 from About import about
 import time 
 from collections import Counter
+import os 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model", "custom_model.h5")
+MODEL_PATH2 = os.path.join(BASE_DIR, "model", "Inception.h5")
+MODEL_PATH3 = os.path.join(BASE_DIR, "model", "ResNet.h5")
 
 # Load the trained model
-MODEL_PATH = 'model/custom_model.h5'
-MODEL_PATH2 = 'model/Inception.h5'
-MODEL_PATH3 = 'model/ResNet.h5'
+# MODEL_PATH = 'model/custom_model.h5'
+# MODEL_PATH2 = 'model/Inception.h5'
+# MODEL_PATH3 = 'model/ResNet.h5'
 
 model = tf.keras.models.load_model(MODEL_PATH)
 model2 = tf.keras.models.load_model(MODEL_PATH2)
 model3 = tf.keras.models.load_model(MODEL_PATH3)
 
 class_names =["Early Blight","Late Blight","Healthy"]
-
 
 def realTime():
     st.write("Ensure your webcam is connected.")
@@ -119,7 +124,7 @@ def realTime():
     cap.release()
     FRAME_WINDOW.empty()
     st.write("Video stream stopped.")
-
+    
 def upload():
     uploaded_file = st.file_uploader("Upload a potato leaf image", type=["jpg", "png", "jpeg"])
     if uploaded_file is not None:
@@ -189,7 +194,6 @@ def camera():
         st.success(f"Prediction: {class_names[class_idx3]}")
         st.info(f"Confidence: {predictions3[0][class_idx3]*100:.2f}")
         
-
 
 # Function to preprocess uploaded images
 def preprocess_image(img):
@@ -269,7 +273,7 @@ if __name__=="__main__":
         home()
     
     st.sidebar.header("Options")
-    option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","Real Time Video","About"],index=None)
+    option = st.sidebar.selectbox("Choose Your Work", ["Upload Image", "Use Camera","About"],index=None)
     
     if(option=="Upload Image"):
         upload()
@@ -277,10 +281,11 @@ if __name__=="__main__":
     elif(option=="Use Camera"):
         camera()
         
-    elif(option=="Real Time Video"):
-        realTime()
+    # elif(option=="Real Time Video"):
+    #     realTime()
     elif(option=="About"):
         about()
+    
     st.markdown("---")
     st.info("📌 Navigate to different sections using the sidebar.")
     st.write("Made with ❤️ by Shubham Srivastava")
