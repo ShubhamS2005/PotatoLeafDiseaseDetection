@@ -278,11 +278,11 @@ if __name__=="__main__":
     if(option=="Upload Image"):
         upload()
         
-    elif(option=="Use Camera"):
-        camera()
+    # elif(option=="Use Camera"):
+    #     camera()
         
-    # elif(option=="Real Time Video"):
-    #     realTime()
+    elif(option=="Real Time Video"):
+        realTime()
     elif(option=="About"):
         about()
     
