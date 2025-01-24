@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+
+        .results {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .results p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .results strong {
+            color: #3498db;
+        }
+
+        img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #2980b9;
+        }
+
+        .links {
+            margin-top: 30px;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Prediction Results</h1>
+
+    <div class="results">
+        <p><strong>Custom Model:</strong> {{ custom_model_prediction }} ({{ custom_model_confidence }})</p>
+        <p><strong>Inception Model:</strong> {{ inception_model_prediction }} ({{ inception_model_confidence }})</p>
+        <p><strong>ResNet Model:</strong> {{ resnet_model_prediction }} ({{ resnet_model_confidence }})</p>
+    </div>
+
+    <h2>Grad-CAM Visualization</h2>
+    <img src="{{ grad_cam_path }}" alt="Grad-CAM Result">
+
+    <div class="links">
+        <a href="/">Upload Another Image</a>
+        <a href="/realtime">Go To Real Time Prediction</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Potato Leaf Disease Detection Project</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Potato Leaf Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        #video-container {
+            display: inline-block;
+            position: relative;
+        }
+        #video-container img {
+            max-width: 100%;
+            border: 5px solid #333;
+            border-radius: 10px;
+        }
+        #controls {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #prediction {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real Time Potato Leaf Disease Detection</h1>
+
+    <div id="video-container">
+        <img src="{{ url_for('video_feed') }}" alt="Video Feed" id="video-feed">
+    </div>
+    <div id="controls">
+        <button id="pause-play-btn" onclick="togglePause()">Pause</button>
+    </div>
+    <div id="prediction"></div>
+    <div id="controls">
+        <button ><a href="/">Go Home</a></button>
+    </div>
+    <script>
+        let isPaused = false;
+
+        function togglePause() {
+            fetch("/toggle_pause", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    isPaused = data.paused;
+                    const button = document.getElementById("pause-play-btn");
+                    button.innerText = isPaused ? "Play" : "Pause";
+                });
+        }
+    </script>
+</body>
+</html>
